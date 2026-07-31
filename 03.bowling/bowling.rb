@@ -3,50 +3,27 @@
 
 score = ARGV[0]
 scores = score.split(',')
-shots = []
-scores.each do |s|
-  if s == 'X' # strike
-    shots << 10
-    shots << 0
-  else
-    shots << s.to_i
-  end
+shots = scores.map do |s|
+  s == 'X' ? 10 : s.to_i
 end
 puts "入力スコア:#{shots}"
-frames = shots.each_slice(2).to_a
-puts "フレームスコア:#{frames}"
-# ストライク状態とスペア状態の記憶フラッグ
-strike_frag = 0
-spare_frag = 0
-# 現在のフレーム数を記録
-i = 0
-point = frames.sum do |frame|
-  i += 1
-  puts "第#{i}フレーム:#{frame}"
-  if strike_frag == 1
-    print 'ストライク'
-    frame_score = frame.sum * 2
 
-  elsif spare_frag == 1
-    print 'スペア'
-    frame_score = frame[0] * 2 + frame[1]
-
+point = 0
+pos = 0
+10.times do |i|
+  print "第#{i + 1}フレーム "
+  if shots[pos] == 10
+    puts "#{shots[pos]} , - ストライク"
+    point += 10 + shots[pos + 1] + shots[pos + 2]
+    pos += 1
+  elsif (shots[pos] + shots[pos + 1]) == 10
+    puts "#{shots[pos]} , #{shots[pos + 1]} スペア"
+    point += 10 + shots [pos + 2]
+    pos += 2
   else
-    print '-'
-    frame_score = frame.sum
+    puts "#{shots[pos]} , #{shots[pos + 1]}"
+    point += shots[pos] + shots[pos + 1]
+    pos += 2
   end
-  puts "=>#{frame_score}点"
-  if frame[0] == 10 # strike
-    strike_frag = 1
-    spare_frag = 0
-  elsif frame.sum == 10 # spare
-    strike_frag = 0
-    spare_frag = 1
-  else
-    strike_frag = 0
-    spare_frag = 0
-  end
-  frame_score
 end
-
-puts point
+puts "合計ポイント:#{point}"
