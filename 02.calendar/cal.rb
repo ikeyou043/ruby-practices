@@ -30,7 +30,6 @@ last_date=Date.new(year,month,-1).day
 puts "#{month}月 #{year}".center(20)
 puts "日 月 火 水 木 金 土"
 #1日目の曜日までスペースで移動
-i=0
 first_day.times do |i|
   #漢字1文字+半角スペース1文字分開ける
   print "   "
