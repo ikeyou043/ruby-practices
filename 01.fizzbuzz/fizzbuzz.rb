@@ -1,6 +1,5 @@
-
-20.times do |t|
-  i=t+1
+#!/usr/bin/env ruby
+(1..15).each do |i|
   if i%15==0
     puts "FizzBuzz"
   elsif i%5==0
