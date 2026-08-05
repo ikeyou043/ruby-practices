@@ -21,22 +21,22 @@ opt.parse!(ARGV)
 year = options[:y]
 month = options[:m]
 
-#取得した年月を使ってその月の1日目の曜日を取得[日:0,月:1,...,土:6]
-first_day=Date.new(year,month,1).wday
+#取得した年月を使ってその月の1日目の曜日を取得
+first_day=Date.new(year,month,1)
 #取得した年月を使ってその月の最終日付を取得
-last_date=Date.new(year,month,-1).day
+last_date=Date.new(year,month,-1)
 
 #カレンダーの年月と曜日を表示(漢字7文字+半角スペース6文字分の文字列)
 puts "#{month}月 #{year}".center(20)
 puts "日 月 火 水 木 金 土"
 #1日目の曜日までスペースで移動
-first_day.times do |i|
+first_day.wday.times do |i|
   #漢字1文字+半角スペース1文字分開ける
   print "   "
 end
 #日付の記載を最終日まで繰り返す
 d=first_day
-(1..last_date).each do |i|
+(1..last_date.day).each do |i|
   #土曜日が来るまでdを増やす 
   d+=1
   if i<10
@@ -44,7 +44,7 @@ d=first_day
   end
   print "#{i} "
   #土曜日が来たら改行し、nをリセット
-  if (first_day+i)%7==0
+  if (first_day.wday+i)%7==0
     puts ""
     d=0
   end
