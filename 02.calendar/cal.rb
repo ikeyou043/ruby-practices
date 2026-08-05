@@ -22,7 +22,7 @@ year = options[:y]
 month = options[:m]
 
 #取得した年月を使ってその月の1日目の曜日を取得
-first_day=Date.new(year,month,1)
+first_date=Date.new(year,month,1)
 #取得した年月を使ってその月の最終日付を取得
 last_date=Date.new(year,month,-1)
 
@@ -30,21 +30,14 @@ last_date=Date.new(year,month,-1)
 puts "#{month}月 #{year}".center(20)
 puts "日 月 火 水 木 金 土"
 #1日目の曜日までスペースで移動
-first_day.wday.times do |i|
+first_date.wday.times do
   #漢字1文字+半角スペース1文字分開ける
   print "   "
 end
-#日付の記載を最終日まで繰り返す
-d=first_day
-(1..last_date.day).each do |i|
-  #土曜日が来るまでdを増やす 
-  d+=1
+(first_date..last_date).each do |date|
   # rjust(2) で桁数を揃え、後ろにスペースを1つ付与
-  print i.to_s.rjust(2) + " "
-  #土曜日が来たら改行し、nをリセット
-  if (first_day.wday+i)%7==0
-    puts ""
-    d=0
-  end
+  print date.day.to_s.rjust(2) + " "
+  # 土曜日が来たら改行する
+  puts if date.saturday?
 end
 puts
