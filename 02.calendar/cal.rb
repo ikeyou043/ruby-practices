@@ -39,10 +39,8 @@ d=first_day
 (1..last_date.day).each do |i|
   #土曜日が来るまでdを増やす 
   d+=1
-  if i<10
-    print " "
-  end
-  print "#{i} "
+  # rjust(2) で桁数を揃え、後ろにスペースを1つ付与
+  print i.to_s.rjust(2) + " "
   #土曜日が来たら改行し、nをリセット
   if (first_day.wday+i)%7==0
     puts ""
