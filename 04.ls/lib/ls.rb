@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-
-def format_in_columns(files, max_columns = 3)
+MAX_COLUMNS = 3
+MARGIN_WIDTH = 3
+def format_in_columns(files, max_columns = MAX_COLUMNS)
   return '' if files.empty?
 
   row_count = files.size.fdiv(max_columns).ceil
@@ -8,10 +9,9 @@ def format_in_columns(files, max_columns = 3)
   rows = sliced_files.transpose
 
   max_width = files.map(&:size).max
-  margin = 3
 
   formatted_lines = rows.map do |row|
-    row.map { |file| file.to_s.ljust(max_width + margin) }.join.rstrip
+    row.map { |file| file.to_s.ljust(max_width + MARGIN_WIDTH) }.join.rstrip
   end
 
   formatted_lines.join("\n")
