@@ -3,7 +3,7 @@
 require 'optparse'
 
 MAX_COLUMNS = 3
-MARGIN_WIDTH = 3
+MARGIN_WIDTH = 2
 
 def parse_options
   options = {}
