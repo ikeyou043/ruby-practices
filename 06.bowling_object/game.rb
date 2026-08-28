@@ -50,12 +50,9 @@ class Game
 
     shot2 = if next_frame.strike? && index < 8
               @frames[index + 2].first_shot.score
-            elsif next_frame.strike?
-              next_frame.second_shot.score
             else
               next_frame.second_shot.score
             end
-
     shot1 + shot2
   end
 end
