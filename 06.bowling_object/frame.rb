@@ -7,12 +7,12 @@ class Frame
 
   def initialize(first_mark, second_mark = nil, third_mark = nil)
     @first_shot = Shot.new(first_mark)
-    @second_shot = Shot.new(second_mark)
-    @third_shot = Shot.new(third_mark)
+    @second_shot = second_mark ? Shot.new(second_mark) : nil
+    @third_shot = third_mark ? Shot.new(third_mark) : nil
   end
 
   def score
-    [first_shot, second_shot, third_shot].sum(&:score)
+    first_shot.score + (second_shot&.score || 0) + (third_shot&.score || 0)
   end
 
   def strike?
@@ -20,6 +20,6 @@ class Frame
   end
 
   def spare?
-    !strike? && (first_shot.score + second_shot.score == 10)
+    !strike? && (first_shot.score + (second_shot.score || 0) == 10)
   end
 end
