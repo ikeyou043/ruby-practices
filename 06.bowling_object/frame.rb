@@ -16,10 +16,10 @@ class Frame
   end
 
   def strike?
-    first_shot.score == 10
+    first_shot.score == Shot::MAX_PINS
   end
 
   def spare?
-    !strike? && (first_shot.score + (second_shot.score || 0) == 10)
+    !strike? && (first_shot.score + (second_shot.score || 0) == Shot::MAX_PINS)
   end
 end
