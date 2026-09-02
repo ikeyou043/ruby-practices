@@ -79,7 +79,7 @@ def format_in_columns(files, max_columns = MAX_COLUMNS)
 
   row_count = files.size.fdiv(max_columns).ceil
   columns = files.each_slice(row_count).map { |slice| slice.values_at(0...row_count) }
-  col_widths = columns.map { |col| col.compact.map(&:size).max }
+  col_widths = columns.map { |col| col.compact.map(&:size).max || 0 }
   rows = columns.transpose
 
   rows.map { |row| format_row(row, col_widths) }.join("\n")
