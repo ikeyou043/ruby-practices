@@ -66,7 +66,8 @@ end
 def calc_max_width(counts, targets, keys)
   return DEFAULT_MAX_WIDTH if counts.first[:name].nil?
 
-  targets.flat_map { |c| keys.map { |k| c[k].to_s.length } }.max
+  target_keys = counts.size == 1 && keys.size == 1 ? keys : %i[lines words bytes]
+  targets.flat_map { |c| target_keys.map { |k| c[k].to_s.length } }.max
 end
 
 def format_line(count, keys, width)
