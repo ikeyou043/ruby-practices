@@ -64,8 +64,9 @@ def build_targets_with_total(counts)
 end
 
 def calc_max_width(counts, targets, keys)
-  return DEFAULT_MAX_WIDTH if counts.first[:name].nil?
-
+  if counts.first[:name].nil?
+    return keys.size == 1 ? counts.first[keys.first].to_s.length : DEFAULT_MAX_WIDTH
+  end
   target_keys = counts.size == 1 && keys.size == 1 ? keys : %i[lines words bytes]
   targets.flat_map { |c| target_keys.map { |k| c[k].to_s.length } }.max
 end
