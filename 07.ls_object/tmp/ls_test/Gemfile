@@ -1,0 +1,14 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+gem 'omniauth'
+gem 'rails'
+gem 'rubocop', require: false
+gem 'sinatra'
+gem 'unicorn'
+group :development do
+  gem 'rubocop-fjord', require: false
+  gem 'rubocop-rails', require: false
+group :development, :test do
+  gem 'test-unit-rails'
+end
