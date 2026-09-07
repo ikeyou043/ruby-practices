@@ -1,0 +1,2 @@
+word = "hello"
+p word
