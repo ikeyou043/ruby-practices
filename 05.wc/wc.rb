@@ -4,6 +4,13 @@ require 'optparse'
 
 DEFAULT_MAX_WIDTH = 7
 
+def main
+  options = parse_options
+  files = ARGV.dup
+  counts = build_file_counts(files)
+  puts result(counts, options)
+end
+
 def parse_options
   options = {}
   opt = OptionParser.new
@@ -14,24 +21,32 @@ def parse_options
   options
 end
 
-def count_content(content)
-  {
-    lines: content.count("\n"),
-    words: content.split.size,
-    bytes: content.bytesize
-  }
-end
-
 def build_file_counts(files)
-  if files.empty? == true
+  if files.empty?
     content = $stdin.read
-    [count_content(content).merge(name: nil)]
+    [count_content(content)]
   else
     files.map do |file|
       content = File.read(file)
-      count_content(content).merge(name: file)
+      count_content(content, name: file)
     end
   end
+end
+
+def count_content(content, name: nil)
+  {
+    lines: content.count("\n"),
+    words: content.split.size,
+    bytes: content.bytesize,
+    name: name
+  }
+end
+
+def result(counts, options)
+  keys = selected_keys(options)
+  targets = build_targets_with_total(counts)
+  max_width = calc_max_width(targets, keys)
+  targets.map { |count| format_line(count, keys, max_width) }.join("\n")
 end
 
 def selected_keys(options)
@@ -39,48 +54,35 @@ def selected_keys(options)
   keys << :lines if options[:l]
   keys << :words if options[:w]
   keys << :bytes if options[:c]
-  return %i[lines words bytes] if keys.empty?
-
-  keys
-end
-
-def format_wc(counts, options)
-  keys = selected_keys(options)
-  targets = build_targets_with_total(counts)
-  max_width = calc_max_width(counts, targets, keys)
-  targets.map { |count| format_line(count, keys, max_width) }.join("\n")
+  keys.empty? ? %i[lines words bytes] : keys
 end
 
 def build_targets_with_total(counts)
-  targets = counts.dup
-  return targets if counts.size <= 1
+  return counts if counts.size <= 1
 
-  targets << {
+  total = {
     lines: counts.sum { |c| c[:lines] },
     words: counts.sum { |c| c[:words] },
     bytes: counts.sum { |c| c[:bytes] },
     name: 'total'
   }
+  [*counts, total]
 end
 
-def calc_max_width(counts, targets, keys)
-  if counts.first[:name].nil?
-    return keys.size == 1 ? counts.first[keys.first].to_s.length : DEFAULT_MAX_WIDTH
+def calc_max_width(targets, keys)
+  if targets.first[:name].nil?
+    return keys.size == 1 ? targets.first[keys.first].to_s.length : DEFAULT_MAX_WIDTH
+
   end
-  target_keys = counts.size == 1 && keys.size == 1 ? keys : %i[lines words bytes]
-  targets.flat_map { |c| target_keys.map { |k| c[k].to_s.length } }.max
+
+  target_keys = targets.size == 1 && keys.size == 1 ? keys : %i[lines words bytes]
+  target_keys.map { |k| targets.last[k].to_s.length }.max
 end
 
 def format_line(count, keys, width)
-  numbers = keys.map { |key| count[key].to_s.rjust(width) }.join(' ')
-  count[:name] ? "#{numbers} #{count[:name]}" : numbers
-end
-
-def main
-  options = parse_options
-  files = ARGV.dup
-  counts = build_file_counts(files)
-  puts format_wc(counts, options)
+  numbers = keys.map { |key| count[key].to_s.rjust(width) }
+  numbers << count[:name] if count[:name]
+  numbers.join(' ')
 end
 
 main if __FILE__ == $PROGRAM_NAME
