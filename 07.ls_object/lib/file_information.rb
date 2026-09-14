@@ -12,7 +12,7 @@ class FileInformation
 
   def initialize(filename)
     @stat = File.lstat(filename)
-    @name = filename
+    @name = File.basename(filename)
   end
 
   def mode

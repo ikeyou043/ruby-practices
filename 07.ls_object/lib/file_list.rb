@@ -10,7 +10,7 @@ class FileList
     file_names = options.all_files? ? Dir.entries(directory) : Dir.glob('*', base: directory)
     file_names = file_names.sort
     file_names = file_names.reverse if options.reverse_files?
-    @file_informations = file_names.map { |name| FileInformation.new(name) }
+    @file_informations = file_names.map { |name| FileInformation.new(File.join(directory, name)) }
     @options = options
   end
 
