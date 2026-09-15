@@ -8,7 +8,8 @@ def main
   options = parse_options
   files = ARGV.dup
   counts = build_file_counts(files)
-  puts result(counts, options)
+  counts << build_total(counts) if counts.size > 1
+  puts format_result(counts, options)
 end
 
 def parse_options
@@ -42,9 +43,9 @@ def count_content(content, name: nil)
   }
 end
 
-def result(counts, options)
+def format_result(counts, options)
   keys = selected_keys(options)
-  targets = build_targets_with_total(counts)
+  targets = counts
   max_width = calc_max_width(targets, keys)
   targets.map { |count| format_line(count, keys, max_width) }.join("\n")
 end
@@ -57,22 +58,15 @@ def selected_keys(options)
   keys.empty? ? %i[lines words bytes] : keys
 end
 
-def build_targets_with_total(counts)
-  return counts if counts.size <= 1
-
-  total = {
-    lines: counts.sum { |c| c[:lines] },
-    words: counts.sum { |c| c[:words] },
-    bytes: counts.sum { |c| c[:bytes] },
-    name: 'total'
-  }
-  [*counts, total]
+def build_total(counts)
+  total = %i[lines words bytes].to_h { |key| [key, counts.sum { |c| c[key] }] }
+  total[:name] = 'total'
+  total
 end
 
 def calc_max_width(targets, keys)
   if targets.first[:name].nil?
-    return keys.size == 1 ? targets.first[keys.first].to_s.length : DEFAULT_MAX_WIDTH
-
+    return keys.size == 1 ? 0 : DEFAULT_MAX_WIDTH
   end
 
   target_keys = targets.size == 1 && keys.size == 1 ? keys : %i[lines words bytes]
